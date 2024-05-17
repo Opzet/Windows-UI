@@ -1,25 +1,33 @@
-const PwdTogglers = document.querySelectorAll('[data-win-toggle="password"]');
+import { BaseComponent } from './Base.js';
 
-for (const PwdToggler of PwdTogglers) {
- const getInputPwdID = PwdToggler.getAttribute("data-win-target");
-  PwdToggler.addEventListener("click", () => {
-    const InputPass = document.querySelector(getInputPwdID);
-    InputPass.type === "password" ? InputPass.type = "text" : InputPass.type = "password";
-  });
-};
+document.addEventListener("DOMContentLoaded", () => {
+    // Handle password visibility toggle
+    const pwdTogglers = document.querySelectorAll('[data-win-toggle="password"]');
+    pwdTogglers.forEach(toggler => {
+        const inputPwdID = toggler.getAttribute("data-win-target");
+        const inputPwd = new BaseComponent(document.querySelector(inputPwdID));
 
+        toggler.addEventListener("click", () => {
+            const currentType = inputPwd.getProperty('type');
+            inputPwd.setProperty('type', currentType === "password" ? "text" : "password");
+        });
+    });
 
-const TxtClearers = document.querySelectorAll('[data-win-clear="text"]');
+    // Handle text clearing
+    const txtClearers = document.querySelectorAll('[data-win-clear="text"]');
+    txtClearers.forEach(clearer => {
+        const inputTxtID = clearer.getAttribute("data-win-target");
+        const inputTxt = new BaseComponent(document.querySelector(inputTxtID));
 
-for (const TxtClearer of TxtClearers) {
- const getInputTxtID = TxtClearer.getAttribute("data-win-target");
- const InputTxt = document.querySelector(getInputTxtID);
- InputTxt.addEventListener("input", () => {
-  InputTxt.value !=="" ? TxtClearer.style.visibility = "visible" : TxtClearer.style.visibility = "hidden";
+        inputTxt.addEventListener("input", () => {
+            const isNotEmpty = inputTxt.getProperty('value') !== "";
+            clearer.style.visibility = isNotEmpty ? "visible" : "hidden";
+        });
+
+        clearer.addEventListener("click", () => {
+            inputTxt.setProperty('value', '');
+            inputTxt.element.focus();
+            clearer.style.visibility = "hidden";
+        });
+    });
 });
- TxtClearer.addEventListener("click", () => {
-    InputTxt.value = "";
-    InputTxt.focus();
-    TxtClearer.style.visibility = "hidden";
-  });
-};
